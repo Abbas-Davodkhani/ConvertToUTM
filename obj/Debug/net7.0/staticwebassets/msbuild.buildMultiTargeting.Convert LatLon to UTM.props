@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\Convert LatLon to UTM.props" />
+</Project>

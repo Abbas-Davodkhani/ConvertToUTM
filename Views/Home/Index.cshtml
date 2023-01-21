@@ -1,0 +1,97 @@
+﻿@using CoordinateSharp;
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@section Css{
+ <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+<style>
+    #mapid {
+        height: 500px;
+    }
+</style>
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+
+</div>
+
+<h2>lat</h2>
+<input type="text" name="lat" id="lat" />
+<h2>lon</h2>
+<input type="text" name="lon" id="lon" />
+<br />
+<button id="convertLLtoUTM">Calculates</button>
+<br />
+
+<div id="mapid">
+
+</div>
+
+
+<label for="X">X</label>
+<input name="X" id="X" />
+<br />
+
+
+<label for="Y">Y</label>
+<input name="Y" id="Y" />
+<br />
+
+<label for="Z">Z</label>
+<input name="Z" id="Z" />
+<br />
+
+
+
+@section Scripts
+{
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script>
+
+    function ShowInMap(lat , lon)
+    {
+        
+        debugger
+        var mymap = L.map('mapid').setView([lat , lon], 8);
+        // add the OpenStreetMap tiles
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            { subdomains: ['a', 'b', 'c'] })
+            .addTo(mymap);
+    }
+
+    $(document).ready(function () {
+
+        $("#convertLLtoUTM").click(function () {
+            var lat = parseFloat($("#lat").val());
+            var lon = parseFloat($("#lon").val());
+
+            $.ajax(
+                {
+                    type: 'POST',
+                    dataType: 'JSON',
+                    url: '/Home/GetData',
+                    data: { lat: lat, lon: lon },
+                    success:
+                        function (response) {
+                            var longZone = response.longZone;
+                            $("#Z").val(longZone);
+                            var eastingX = response.easting;
+                             $("#X").val(eastingX);
+                            var northingY = response.northing;
+                             $("#Y").val(northingY); 
+
+                            ShowInMap(lat , lon);
+                        },
+                    error:
+                        function (response) {
+                            alert("Error: " + response);
+                        }
+                });
+        });
+    });
+</script>
+}

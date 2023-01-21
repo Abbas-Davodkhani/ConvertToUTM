@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\buildMultiTargeting\Convert LatLon to UTM.props" />
+</Project>
